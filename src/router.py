@@ -1,4 +1,4 @@
-from src.network import Request
+from src.http import HttpRequest
 from src.route_parser import DefaultRouteParser
 
 
@@ -29,7 +29,7 @@ class Router:
         self.state = State.GATHERING
 
     # make thread-safe?
-    def resolve(self, request: Request) -> None:
+    def resolve(self, request: HttpRequest) -> None:
         if self.route_parser:
             self.route_parser.resolve(request)
         else:

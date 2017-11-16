@@ -1,5 +1,5 @@
 from src.exceptions import MethodNotDefinedError
-from src.network import Request
+from src.http import HttpRequest
 
 
 class RouteController:
@@ -19,7 +19,7 @@ class RouteController:
     def delete(self):
         self.__raise_method_not_defined()
 
-    def set_request(self, request: Request):
+    def set_request(self, request: HttpRequest):
         self.request = request
 
     def __raise_method_not_defined(self):

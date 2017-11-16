@@ -1,7 +1,7 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from socketserver import ThreadingMixIn
 
-from src.network import Request
+from src.http import HttpRequest
 from src.route_parser import DefaultRouteParser
 from src.router import Router
 
@@ -9,7 +9,7 @@ from src.router import Router
 class RequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         print('new request')
-        Router().resolve(Request(self.path, Request.methods.get))
+        Router().resolve(HttpRequest(self.path, HttpRequest.methods.get))
         self.send_response_only(200, 'OK')
 
 

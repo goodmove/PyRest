@@ -1,6 +1,6 @@
 from src.controller import RouteController
 from src.exceptions import MethodNotDefinedError, NoRouteFoundError
-from src.network import Request
+from src.http import HttpRequest
 
 
 class AbstractRouteParser:
@@ -11,7 +11,7 @@ class AbstractRouteParser:
     def __init__(self, route_mapping):
         self.route_mapping = route_mapping
 
-    def resolve(self, request: Request) -> None:
+    def resolve(self, request: HttpRequest) -> None:
         """
             Maps request to one of registered RouteController instances
 
@@ -32,7 +32,7 @@ class DefaultRouteParser(AbstractRouteParser):
     def __init__(self, route_mapping: dict):
         super(DefaultRouteParser, self).__init__(route_mapping)
 
-    def resolve(self, request: Request):
+    def resolve(self, request: HttpRequest):
         route_controller = self.route_mapping.get(request.path, None)
 
         if route_controller:
@@ -40,12 +40,12 @@ class DefaultRouteParser(AbstractRouteParser):
         else:
             raise NoRouteFoundError('Route ' + str(request.path) + ' is not registered')
 
-    def __resolve_method(self, request: Request, controller: RouteController):
+    def __resolve_method(self, request: HttpRequest, controller: RouteController):
         requests_map = {
-            Request.methods.post: controller.post,
-            Request.methods.get: controller.get,
-            Request.methods.update: controller.update,
-            Request.methods.delete: controller.delete
+            HttpRequest.methods.post: controller.post,
+            HttpRequest.methods.get: controller.get,
+            HttpRequest.methods.update: controller.update,
+            HttpRequest.methods.delete: controller.delete
         }
 
         handler = requests_map.get(request.method, None)

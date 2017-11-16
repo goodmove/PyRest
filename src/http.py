@@ -1,4 +1,4 @@
-class Request:
+class HttpRequest:
 
     class RequestMethod:
         post = 'POST'
