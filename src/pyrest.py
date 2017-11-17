@@ -33,7 +33,7 @@ class PyRest:
         self.router = Router()
         self.threading_mixin_class = MixInClass
 
-        self.router.start_routing(RouteParserClass)
+        self.router.init_routes(RouteParserClass)
 
     def run(self, poll_interval: float=0.5):
         if self.state is not PyRest.State.LAUNCHING:

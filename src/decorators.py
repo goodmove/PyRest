@@ -1,4 +1,4 @@
-from src.controller import RouteController
+from src.controller import PyRestRouteController
 from src.http import HttpRequest
 from src.route import RouteParameters
 from src.router import Router
@@ -38,11 +38,11 @@ def DELETE(schema: str):
 
 
 def inherit_route_controller(cls):
-    decorated_class = type(cls.__name__, (controller,) + cls.__bases__, dict(cls.__dict__))
+    decorated_class = type(cls.__name__, (PyRestRouteController,) + cls.__bases__, dict(cls.__dict__))
     return decorated_class
 
 
-def controller(class_obj):
+def RouteController(class_obj):
     print('___start')
     class_obj = class_obj
     print(class_obj)

@@ -1,4 +1,4 @@
-from src.controller import RouteController
+from src.controller import PyRestRouteController
 
 
 class AbstractRoute:
@@ -25,7 +25,7 @@ class Route(AbstractRoute):
     def __init__(self,
                  schema: str,
                  parameter_names: list,
-                 controller_instance: RouteController):
+                 controller_instance: PyRestRouteController):
         self._schema = schema
         self._parameter_names = parameter_names
         self._controller = controller_instance

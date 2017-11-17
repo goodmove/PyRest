@@ -1,6 +1,6 @@
 from typing import Dict, Any, List
 
-from src.controller import RouteController
+from src.controller import PyRestRouteController
 from src.exceptions import MethodNotDefinedError, NoRouteFoundError, DoubleMethodBindingError
 from src.http import HttpRequest
 from src.route import Route, RouteParameters
