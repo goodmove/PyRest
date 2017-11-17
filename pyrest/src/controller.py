@@ -1,10 +1,13 @@
-from pyrest.src.http import HttpRequest
+from pyrest.http import HttpRequest
 
 
 class PyRestRouteController:
 
     def __init__(self):
-        self.request = None
+        self.__request = None
 
     def set_request(self, request: HttpRequest):
-        self.request = request
+        self.__request = request
+
+    def get_request(self) -> HttpRequest:
+        return self.__request

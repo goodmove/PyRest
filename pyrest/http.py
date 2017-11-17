@@ -17,3 +17,6 @@ class HttpRequest:
 
     def parse_url(self, url: str):
         self.path = url
+
+class HttpResponse:
+    pass

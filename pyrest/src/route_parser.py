@@ -1,5 +1,5 @@
+from pyrest.http import HttpRequest
 from pyrest.src.exceptions import DoubleMethodBindingError, MethodNotDefinedError, NoRouteFoundError
-from pyrest.src.http import HttpRequest
 from pyrest.src.route import Route
 
 
@@ -69,7 +69,7 @@ class DefaultRouteParser(AbstractRouteParser):
         getattr(
             route_container.route.get_controller(),
             route_container.handlers.get(request.method)
-        )()
+        )(request)
 
     def __build_routes(self, class_routes: dict):
         for controller_class, route_params_list in class_routes.items():

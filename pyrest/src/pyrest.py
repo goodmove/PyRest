@@ -1,6 +1,6 @@
 from http.server import BaseHTTPRequestHandler
 
-from pyrest.src.http import HttpRequest
+from pyrest.http import HttpRequest
 from pyrest.src.router import Router
 
 

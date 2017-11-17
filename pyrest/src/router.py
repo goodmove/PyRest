@@ -1,4 +1,4 @@
-from pyrest.src.http import HttpRequest
+from pyrest.http import HttpRequest
 from pyrest.src.route import RouteParameters
 from pyrest.src.route_parser import DefaultRouteParser
 

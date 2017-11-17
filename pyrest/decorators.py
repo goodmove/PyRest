@@ -1,5 +1,5 @@
-from pyrest.src.decorators import decorate_with_route_info
-from pyrest.src.http import HttpRequest
+from pyrest.http import HttpRequest
+from pyrest.src.decorators import decorate_with_route_info, inherit_route_controller
 from pyrest.src.route import RouteParameters
 from pyrest.src.router import Router
 
@@ -7,6 +7,7 @@ from pyrest.src.router import Router
 def RouteController(class_obj):
     print('___start')
     class_obj = class_obj
+    inherited_class_obj = inherit_route_controller(class_obj)
     print(class_obj)
 
     for method_name in dir(class_obj):
@@ -22,11 +23,11 @@ def RouteController(class_obj):
                 print(http_method)
                 delattr(attr, 'http_method')
 
-            Router().register_schema(class_obj, RouteParameters(method_name, http_method, schema))
+            Router().register_schema(inherited_class_obj, RouteParameters(method_name, http_method, schema))
 
     print('___end')
 
-    return class_obj
+    return inherited_class_obj
 
 
 def GET(schema: str):
