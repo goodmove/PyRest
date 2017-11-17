@@ -1,9 +1,6 @@
-from typing import Dict, Any, List
-
-from src.controller import PyRestRouteController
-from src.exceptions import MethodNotDefinedError, NoRouteFoundError, DoubleMethodBindingError
-from src.http import HttpRequest
-from src.route import Route, RouteParameters
+from pyrest.src.exceptions import DoubleMethodBindingError, MethodNotDefinedError, NoRouteFoundError
+from pyrest.src.http import HttpRequest
+from pyrest.src.route import Route
 
 
 class AbstractRouteParser:

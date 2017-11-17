@@ -1,19 +1,11 @@
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import HTTPServer
 from socketserver import ThreadingMixIn
 
-from src.http import HttpRequest
-from src.route_parser import DefaultRouteParser
-from src.router import Router
+from pyrest.src.route_parser import DefaultRouteParser
+from pyrest.src.router import Router
 
+from pyrest.src.pyrest import DEFAULT_SERVER_ADDRESS, RequestHandler
 
-class RequestHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        print('new request')
-        Router().resolve(HttpRequest(self.path, HttpRequest.methods.get))
-        self.send_response_only(200, 'OK')
-
-
-DEFAULT_SERVER_ADDRESS = ('', 8000)
 
 class PyRest:
 

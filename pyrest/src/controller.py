@@ -1,5 +1,4 @@
-from src.exceptions import MethodNotDefinedError
-from src.http import HttpRequest
+from pyrest.src.http import HttpRequest
 
 
 class PyRestRouteController:

@@ -1,8 +1,6 @@
-from typing import Dict, Any, List
-
-from src.http import HttpRequest
-from src.route import RouteParameters
-from src.route_parser import DefaultRouteParser
+from pyrest.src.http import HttpRequest
+from pyrest.src.route import RouteParameters
+from pyrest.src.route_parser import DefaultRouteParser
 
 
 class Singleton:

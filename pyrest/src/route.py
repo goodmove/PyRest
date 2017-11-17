@@ -1,4 +1,4 @@
-from src.controller import PyRestRouteController
+from pyrest.src.controller import PyRestRouteController
 
 
 class AbstractRoute:
