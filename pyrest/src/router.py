@@ -1,6 +1,6 @@
 from pyrest.http import HttpRequest
+from pyrest.src.parser.default_parser import DefaultRouteParser
 from pyrest.src.route import RouteParameters
-from pyrest.src.route_parser import DefaultRouteParser
 
 
 class Singleton:
