@@ -74,7 +74,7 @@ class Router:
             raise AssertionError('All registered routes are already initialized')
 
         self._state = State.INITIALIZING
-        print(str(self._class_routes))
+        # print(str(self._class_routes))
         self._route_parser = route_parser_class(self._class_routes)
         self._state = State.ROUTING
 

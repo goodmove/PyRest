@@ -1,10 +1,9 @@
 from http.server import HTTPServer
 from socketserver import ThreadingMixIn
 
-from pyrest.src.route_parser import DefaultRouteParser
-from pyrest.src.router import Router
-
+from pyrest.src.parser.default_parser import DefaultRouteParser
 from pyrest.src.pyrest import DEFAULT_SERVER_ADDRESS, RequestHandler
+from pyrest.src.router import Router
 
 
 class PyRest:
