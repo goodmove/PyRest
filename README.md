@@ -69,6 +69,8 @@ at the moment:
 - static schemas
 - dynamic schemas
 
+**Static schema**
+
 For the handler to be invoked, static schema must be matched by the request URL exactly as written 
 in the declaration. 
 
@@ -83,8 +85,11 @@ class MessagesController:
         # return rules information
 
 ```
-For the handler to be invoked, request url must be the following: 
+For the handler to be invoked, request URL must be the following: 
 `/messages/welcome_messages/rules`
+
+
+**Dynamic schema**
 
 In contrast, dynamic schema is parametrized and can also have strict type    
 **Example:**
@@ -115,11 +120,11 @@ If parameter is registered with a certain type, PyRest
 1. `int` - same as matching against `\d+` regex, cast to python `int` type
 2. `word` - same as matching against `\w+` regex, cast to python `str` type
 3. `alpha` - same as matching against `[a-zA-Z]+` regex, cast to python `str` type
-4. `any` - same as matching against `.+`regex, cast to python `str` type
+4. `any` - same as matching against `.+` regex, cast to python `str` type
 
 If the type isn't specified, `any` is used automatically.
 
-All parameters **must** be written in the following format: `{<name>:<type>}`
+All parameters **must** be written in the following format: `{<name>[:<type>]}`
 
 > *You can extend typing by writing your own RouteParser and adding support for custom route schemas*
 
@@ -138,7 +143,7 @@ If you want to add your own functionality or just curious, how this all works, r
 ### Route Parser
 
 Route Parser is the brain of the whole thing. At construction time, it accepts
-a `dict` of the following structure: `route_parse_class -> route_parameters`, where
+a `dict` of the following structure: `route_parser_class -> route_parameters`, where
 *route_parameters* is an object, having `http_method`, `class_handler_name`, and 
 `schema` attributes. All this information is used to build up a structure that would be
 able to resolve routes to resource handlers. 
