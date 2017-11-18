@@ -1,9 +1,9 @@
 import re
 
 from pyrest.http import HttpRequest
+from pyrest.parser.route_parser import AbstractRouteParser
 from pyrest.src.controller import PyRestRouteController
 from pyrest.src.exceptions import *
-from pyrest.src.parser.route_parser import AbstractRouteParser
 from pyrest.src.route import RouteParameters
 
 

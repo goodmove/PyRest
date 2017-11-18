@@ -1,6 +1,6 @@
 from pyrest.http import HttpRequest
+from pyrest.parser.route_parser import AbstractRouteParser
 from pyrest.src.exceptions import NoRouteFoundError, DoubleMethodBindingError, MethodNotDefinedError
-from pyrest.src.parser.route_parser import AbstractRouteParser
 from pyrest.src.route import Route
 
 
