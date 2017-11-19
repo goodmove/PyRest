@@ -1,6 +1,6 @@
 import re
 
-from pyrest.http import HttpRequest
+from pyrest.http import HttpRequest, HttpResponse
 from pyrest.parser.route_parser import AbstractRouteParser
 from pyrest.src.controller import PyRestRouteController
 from pyrest.src.exceptions import *
@@ -82,7 +82,7 @@ class TreeRouteParser(AbstractRouteParser):
         if class_routes is not None:
             self.__build_routes(class_routes)
 
-    def resolve(self, request: HttpRequest) -> None:
+    def resolve(self, request: HttpRequest) -> HttpResponse:
         url = str(request.path)
 
         param_values = []
@@ -122,7 +122,7 @@ class TreeRouteParser(AbstractRouteParser):
         if not handler:
             raise MethodNotDefinedError('Method ' + request.method + ' is not defined')
 
-        getattr(node.route_controller, handler)(request, *param_values)
+        return getattr(node.route_controller, handler)(request, *param_values)
 
     def add_route(self, controller_instance, handler, http_method, schema):
         pass

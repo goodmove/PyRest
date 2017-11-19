@@ -1,4 +1,4 @@
-from pyrest.http import HttpRequest
+from pyrest.http import HttpRequest, HttpResponse
 from pyrest.parser.default_parser import DefaultRouteParser
 from pyrest.src.route import RouteParameters
 
@@ -37,9 +37,9 @@ class Router:
         self._registered_schemas = set()
 
     # make thread-safe?
-    def resolve(self, request: HttpRequest) -> None:
+    def resolve(self, request: HttpRequest) -> HttpResponse:
         if self._route_parser:
-            self._route_parser.resolve(request)
+            return self._route_parser.resolve(request)
         else:
             raise ReferenceError('RouteParser is not initialized in router')
 

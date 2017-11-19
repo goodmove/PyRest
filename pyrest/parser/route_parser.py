@@ -1,4 +1,4 @@
-from pyrest.http import HttpRequest
+from pyrest.http import HttpRequest, HttpResponse
 from pyrest.src.exceptions import DoubleMethodBindingError, MethodNotDefinedError, NoRouteFoundError
 from pyrest.src.route import Route
 
@@ -7,7 +7,7 @@ class AbstractRouteParser:
     """
         Defines interface for all RouteParser implementations.
     """
-    def resolve(self, request: HttpRequest) -> None:
+    def resolve(self, request: HttpRequest) -> HttpResponse:
         """
             Maps request to one of registered RouteController instances
 
