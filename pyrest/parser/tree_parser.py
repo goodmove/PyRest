@@ -7,19 +7,8 @@ from pyrest.src.exceptions import *
 from pyrest.src.route import RouteParameters
 
 
-class RegexRouteParser(AbstractRouteParser):
-
-    def resolve(self, request: HttpRequest) -> None:
-        pass
-
-
-# /users/{id:int}
-
-# (\w+(-\w)*)|{\w+(:(number|word|string))?}
-
-
-schema_pattern = r"^(\/\w+(-\w+)*)|(\/{\w+(:(int|word|alpha))?})$"
-parameter_pattern = r"^{\w+(:(int|word|alpha))?}$"
+schema_pattern = r"^((\/\w+(-\w+)*)|(\/{\w+(:(int|word|alpha))?}))+$"
+parameter_pattern = r"^{[_a-zA-Z]\w+(:(int|word|alpha))?}$"
 resource_name_pattern = r"^(\w+(-\w+)*)$"
 
 
@@ -34,6 +23,7 @@ class TreeNode:
         self.schema = ''
         self.handlers = dict()
 
+
     def get_children(self) -> dict:
         return self.children
 
@@ -44,7 +34,7 @@ class TreeNode:
     def get_child(self, child_name):
         return self.children.get(child_name, None)
 
-    def add_parameter(self, parameter_node):
+    def set_parameter(self, parameter_node):
         self.parameter_node = parameter_node
 
     def get_parameter(self):
@@ -65,14 +55,16 @@ class ParamTreeNode(TreeNode):
         self.value_type = {
             'int': int,
             'alpha': str,
-            'word:': str
-        }.get(value_type)
+            'word:': str,
+            'any:': str,
+        }.get('any' if value_type is None else value_type)
 
         self.value_pattern = {
-            'int': r"\d+",
-            'alpha': r"[a-zA-Z]+",
-            'word': r""
-        }.get(value_type)
+            'int': r"^\d+$",
+            'alpha': r"^[a-zA-Z]+$",
+            'word': r"^\w+$",
+            'any': r".+"
+        }.get('any' if value_type is None else value_type)
 
     def parse(self, param_string: str):
         if re.match(self.value_pattern, param_string):
@@ -84,25 +76,26 @@ class ParamTreeNode(TreeNode):
 
 class TreeRouteParser(AbstractRouteParser):
 
-    def __init__(self, class_routes: dict):
-        self._routes_tree = None
-        self.__build_routes(class_routes)
+    def __init__(self, class_routes: dict=None):
+        # initialize root route
+        self._routes_tree = TreeNode('')
+        if class_routes is not None:
+            self.__build_routes(class_routes)
 
     def resolve(self, request: HttpRequest) -> None:
         url = str(request.path)
-
-        if url == '/':
-            print('root requested')
-            return
 
         param_values = []
         is_param_value_invalid = False
         invalid_param_value_error = None
 
+        if not url.endswith('/'):
+            url += '/'
+
         url_parts = url.split('/')
-        url_parts[0] = '/'
         node = self._routes_tree
-        for i in range(1, len(url_parts)):
+
+        for i in range(1, len(url_parts)-1):
             child = node.get_child(url_parts[i])
             if child:
                 node = child
@@ -131,6 +124,11 @@ class TreeRouteParser(AbstractRouteParser):
 
         getattr(node.route_controller, handler)(request, *param_values)
 
+    def add_route(self, controller_instance, handler, http_method, schema):
+        pass
+
+    def insert_schema(self, schema: str):
+        return self.__build_tree_path(schema)
 
     def __build_routes(self, class_routes: dict):
         print('\n\nbuilding tree\n\n')
@@ -144,64 +142,15 @@ class TreeRouteParser(AbstractRouteParser):
     def __insert_in_tree(self, controller_instance: PyRestRouteController, params: RouteParameters):
         print("Inserting schema: " + params.schema)
 
-        schema = params.schema
-        if len(schema) == 0:
-            raise InvalidSchemaFormatError('Schema length must be greater that zero')
+        route_tree_node = self.insert_schema(params.schema)
 
-        current_tree_node = self._routes_tree
-        schema_part = schema[0]
+        if route_tree_node.is_route:
+            raise SchemaDoubleDefinitionError('Schema ' + params.schema + ' already registered')
 
-        if schema_part != '/':
-            raise InvalidSchemaFormatError('Route schema must begin with /')
-
-        if current_tree_node is None:
-            # if tree route is not initialized, initialize it
-            current_tree_node = TreeNode('/')
-            self._routes_tree = current_tree_node
-
-        schema_parts = schema.split('/')
-
-        schema_parts_count = len(schema_parts)
-
-        for i in range(1, schema_parts_count):
-            schema_part = str(schema_parts[i])
-            print(schema_part)
-            if len(schema_part) == 0 and schema != '/':
-                raise InvalidSchemaFormatError('Repeating slashes are not allowed')
-
-            if re.match(resource_name_pattern, schema_part):
-                print('matched resource name')
-                tree_node = current_tree_node.get_child(schema_part)
-                if not tree_node:
-                    tree_node = TreeNode(schema_part)
-                current_tree_node.add_child(tree_node)
-                current_tree_node = tree_node
-            elif re.match(parameter_pattern, schema_part):
-                param_node = current_tree_node.get_parameter()
-                if not param_node:
-                    value_type = self.__get_value_type(schema_part)
-                    param_node = ParamTreeNode(schema_part, value_type)
-                else:
-                    raise RuntimeError('Error for schema ' + schema +
-                                       ': any route part can only contain one parametrized child.')
-                current_tree_node.add_parameter(param_node)
-                current_tree_node = param_node
-                print('matched parameter pattern')
-            else:
-                raise InvalidSchemaFormatError('Schema part didn\'t match any valid patterns: ' + schema_part)
-
-        if current_tree_node.is_route:
-            raise SchemaDoubleDefinitionError('Schema ' + schema + ' already registered')
-
-        current_tree_node.is_route = True
-        current_tree_node.schema = schema
-        current_tree_node.route_controller = controller_instance
-        current_tree_node.add_handler(params.http_method, params.handler)
-
-    def __get_value_type(self, schema_part: str):
-        value_type_string = schema_part[schema_part.find(':')+1:-1]
-        print(value_type_string)
-        return value_type_string
+        route_tree_node.is_route = True
+        route_tree_node.schema = params.schema
+        route_tree_node.route_controller = controller_instance
+        route_tree_node.add_handler(params.http_method, params.handler)
 
     def __print_tree(self):
         print('\n\n**** printing tree ****\n\n')
@@ -224,3 +173,67 @@ class TreeRouteParser(AbstractRouteParser):
             parameter = node.get_parameter()
             if parameter:
                 nodes_queue.append(parameter)
+
+    def __build_tree_path(self, schema: str) -> TreeNode:
+        print('schema: ' + schema)
+        if len(schema) == 0:
+            raise InvalidSchemaFormatError('Schema length must be greater that zero')
+
+        schema_part = schema[0]
+
+        if schema_part != '/':
+            raise InvalidSchemaFormatError('Route schema must begin with /')
+
+        if not schema.endswith('/'):
+            schema += '/'
+
+        current_tree_node = self._routes_tree
+        schema_parts = schema.split('/')
+        schema_parts_count = len(schema_parts)
+        schema_parameter_names = set()
+
+        for i in range(1, schema_parts_count-1):
+            schema_part = str(schema_parts[i])
+            print('___ parsing ' + schema_part + ' ___')
+            if len(schema_part) == 0:
+                raise InvalidSchemaFormatError('Repeating slashes are not allowed')
+
+            if re.match(resource_name_pattern, schema_part):
+                print('matched resource name')
+                tree_node = current_tree_node.get_child(schema_part)
+                if not tree_node:
+                    tree_node = TreeNode(schema_part)
+                current_tree_node.add_child(tree_node)
+                current_tree_node = tree_node
+            elif re.match(parameter_pattern, schema_part):
+                print('matched parameter pattern')
+                param_node = current_tree_node.get_parameter()
+                if not param_node:
+                    schema_parameter = self.__parse_parametrized_part(schema_part)
+                    if schema_parameter[0] in schema_parameter_names:
+                        raise DoubleDeclarationError('Double declaration of parameter ' + str(schema_parameter[0]) +
+                                                     ' in schema ' + schema)
+                    schema_parameter_names.add(schema_parameter[0])
+                    param_node = ParamTreeNode(schema_part, schema_parameter[1])
+                else:
+                    print(param_node.name)
+                    raise RuntimeError('Error for schema ' + schema +
+                                       ': any route part can only contain one parametrized child.')
+                current_tree_node.set_parameter(param_node)
+                current_tree_node = param_node
+            else:
+                raise InvalidSchemaFormatError('Schema part didn\'t match any valid patterns: ' + schema_part)
+
+        return current_tree_node
+
+    def __parse_parametrized_part(self, schema_part: str) -> tuple:
+        parameter_parts = schema_part.strip('{}').split(':')
+        parameter_name = parameter_parts[0].strip()
+        print('retrieved parameter name:' + parameter_name)
+
+        parameter_type = None
+        if len(parameter_parts) > 1:
+            parameter_type = parameter_parts[1].strip()
+            print('retrieved parameter type:' + parameter_name)
+
+        return (parameter_name, parameter_type)
