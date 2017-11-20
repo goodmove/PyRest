@@ -24,11 +24,14 @@ class HttpRequest:
 
 class HttpResponse:
 
+    DEFAULT_ENCODING = 'UTF-8'
+
     def __init__(self, code: int = 200, message: str = 'OK'):
         self.__code = code
         self.__message = message
         self.__headers = dict()
         self.__body = ''
+        self.__encoding = HttpResponse.DEFAULT_ENCODING
 
     def add_header(self, header_name: str, header_value: str):
         self.__headers[header_name] = header_value
@@ -49,6 +52,11 @@ class HttpResponse:
 
     def get_message(self):
         return self.__message
+
+    def set_encoding(self, encoding: str ):
+        self.__encoding = encoding
+
+        return self
 
 
 class HttpJsonResponse(HttpResponse):
