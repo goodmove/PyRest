@@ -144,8 +144,8 @@ class TreeRouteParser(AbstractRouteParser):
 
         route_tree_node = self.insert_schema(params.schema)
 
-        if route_tree_node.is_route:
-            raise SchemaDoubleDefinitionError('Schema ' + params.schema + ' already registered')
+        # if route_tree_node.is_route:
+        #     raise SchemaDoubleDefinitionError('Schema ' + params.schema + ' already registered')
 
         route_tree_node.is_route = True
         route_tree_node.schema = params.schema

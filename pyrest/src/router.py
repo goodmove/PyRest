@@ -34,7 +34,7 @@ class Router:
         # runtime stages change
         self._state = State.GATHERING
 
-        self._registered_schemas = set()
+        # self._registered_schemas = set()
 
     # make thread-safe?
     def resolve(self, request: HttpRequest) -> HttpResponse:
@@ -48,8 +48,8 @@ class Router:
         if self._state is not State.GATHERING:
             raise AssertionError('Registration is not allowed any more: router has registered all routes.')
 
-        if route_parameters.schema in self._registered_schemas:
-            raise RuntimeError('Schema ' + str(route_parameters.schema) + ' is already registered')
+        # if route_parameters.schema in self._registered_schemas:
+        #     raise RuntimeError('Schema ' + str(route_parameters.schema) + ' is already registered')
 
         print("Registered schema " + str(route_parameters.schema) + " for class " + str(route_controller_class))
 
