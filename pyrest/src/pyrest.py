@@ -28,7 +28,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 
     def __handle_request(self):
         try:
-            http_response = Router().resolve(HttpRequest(self.path, HttpRequest.methods.get))
+            http_response = Router().resolve(HttpRequest(self.path, self.command))
         except  (NoRouteFoundError,
                 MethodNotDefinedError,
                 InvalidParameterValueError) as error:
