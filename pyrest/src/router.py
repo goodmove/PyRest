@@ -53,7 +53,7 @@ class Router:
 
         print("Registered schema " + str(route_parameters.schema) + " for class " + str(route_controller_class))
 
-        self._registered_schemas.add(route_parameters.schema)
+        # self._registered_schemas.add(route_parameters.schema)
         class_routes = self._class_routes.get(route_controller_class, [])
         class_routes.append(route_parameters)
         self._class_routes[route_controller_class] = class_routes
