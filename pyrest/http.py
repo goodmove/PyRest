@@ -1,4 +1,5 @@
 import json
+from email.message import Message
 
 
 class HttpRequest:
@@ -11,15 +12,37 @@ class HttpRequest:
 
     methods = RequestMethod()
 
-    def __init__(self, url: str, method: str):
+    def __init__(self, url: str, method: str, headers: Message):
         self.path = None
-        self.parameters = None
+        self.query_params = dict()
         self.method = method
+        self.headers = headers
 
-        self.parse_url(url)
+        self.__parse_url(url)
 
-    def parse_url(self, url: str):
-        self.path = url
+    def __parse_url(self, url: str):
+        url_parts = url.split('?')
+        self.path = url_parts[0]
+
+        if len(url_parts) == 1:
+            return
+
+        for parameter in url_parts[1].split('&'):
+            try:
+                (key, value) = parameter.split('=')
+                self.query_params[key] = value
+            except ValueError as err:
+                continue
+
+
+class HttpJsonRequest(HttpRequest):
+
+    def __init__(self, url: str, method: str, headers: Message, json_body: dict):
+        super(HttpJsonRequest, self).__init__(url, method, headers)
+        self.__json_body = json_body
+
+    def get_json(self):
+        return self.__json_body
 
 
 class HttpResponse:
@@ -70,3 +93,16 @@ class HttpJsonResponse(HttpResponse):
         self.add_header('Content-Length', str(len(self.__json_str)))
 
         self.set_body(self.__json_str)
+
+
+class ContentType:
+    json = 'application/json'
+    xml = 'application/xml'
+    text = 'text/plain'
+    css = 'text/css'
+    html = 'text/html'
+
+
+class Headers:
+    content_type = 'Content-Type'
+    content_length = 'Content-Length'
