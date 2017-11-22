@@ -106,3 +106,4 @@ class ContentType:
 class Headers:
     content_type = 'Content-Type'
     content_length = 'Content-Length'
+    auth = 'Authorization'
