@@ -15,16 +15,10 @@ def RouteController(class_obj):
             # print('method name: ' + method_name)
             schema = getattr(attr, 'schema', None)
             http_method = getattr(attr, 'http_method', None)
-            if isinstance(schema, str):
-                # print(schema)
+            if isinstance(schema, str) and isinstance(http_method, str):
                 delattr(attr, 'schema')
-            if isinstance(http_method, str):
-                # print(http_method)
                 delattr(attr, 'http_method')
-
-            Router().register_schema(inherited_class_obj, RouteParameters(method_name, http_method, schema))
-
-    # print('___end')
+                Router().register_schema(inherited_class_obj, RouteParameters(method_name, http_method, schema))
 
     return inherited_class_obj
 
