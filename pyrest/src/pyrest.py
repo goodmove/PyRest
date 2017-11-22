@@ -40,9 +40,10 @@ class RequestHandler(BaseHTTPRequestHandler):
                 http_request = HttpRequest(self.path, self.command, self.headers)
             http_response = Router().resolve(http_request)
         except (NoRouteFoundError,
-                MethodNotDefinedError,
                 InvalidParameterValueError) as error:
-            http_response = HttpResponse(404, 'Not Found. ' + repr(error))
+            http_response = HttpResponse(404, 'Not Found')
+        except MethodNotDefinedError as error:
+            http_response = HttpResponse(405, 'Method Not Allowed')
         except Exception as error:
             print(repr(error), file=sys.stderr)
             http_response = HttpResponse(500, 'Internal server error: ' + repr(error))
