@@ -5,13 +5,11 @@ from pyrest.src.router import Router
 
 
 def RouteController(class_obj):
-    # print('___start')
     class_obj = class_obj
 
     for method_name in dir(class_obj):
         if not method_name.startswith('_'):
             attr = getattr(class_obj, method_name)
-            # print('method name: ' + method_name)
             schema = getattr(attr, 'schema', None)
             http_method = getattr(attr, 'http_method', None)
             if isinstance(schema, str) and isinstance(http_method, str):
