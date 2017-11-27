@@ -2,7 +2,6 @@ import json
 from http.server import BaseHTTPRequestHandler
 
 import sys
-
 import re
 
 from pyrest.http import HttpRequest, HttpResponse, HttpJsonRequest, ContentType, Headers, ResponseMessages
@@ -14,11 +13,9 @@ DEFAULT_SERVER_ADDRESS = ('', 8000)
 
 class RequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
-        print('new GET request')
         self.__handle_request()
 
     def do_POST(self):
-        print('new POST request')
         content_type = self.headers.get(Headers.content_type)
         http_request = None
         if re.match(ContentType.json, content_type):
@@ -29,11 +26,9 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.__handle_request(http_request)
 
     def do_UPDATE(self):
-        print('new UPDATE request')
         self.__handle_request()
 
     def do_DELETE(self):
-        print('new DELETE request')
         self.__handle_request()
 
     def do_OPTIONS(self):
