@@ -1,5 +1,5 @@
 from pyrest.http import HttpRequest
-from pyrest.src.decorators import decorate_with_route_info, inherit_route_controller
+from pyrest.src.decorators import decorate_with_route_info
 from pyrest.src.route import RouteParameters
 from pyrest.src.router import Router
 
