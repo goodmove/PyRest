@@ -4,7 +4,6 @@ import sys
 
 from pyrest.http import HttpRequest, HttpResponse
 from pyrest.parser.route_parser import AbstractRouteParser
-from pyrest.src.controller import PyRestRouteController
 from pyrest.src.exceptions import *
 from pyrest.src.route import RouteParameters
 
@@ -134,7 +133,7 @@ class TreeRouteParser(AbstractRouteParser):
             for route_params in route_params_list:
                 self.__insert_in_tree(controller_instance, route_params)
 
-    def __insert_in_tree(self, controller_instance: PyRestRouteController, params: RouteParameters):
+    def __insert_in_tree(self, controller_instance, params: RouteParameters):
         route_tree_node = self.insert_schema(params.schema)
 
         # if route_tree_node.is_route:

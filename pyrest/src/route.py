@@ -1,6 +1,3 @@
-from pyrest.src.controller import PyRestRouteController
-
-
 class AbstractRoute:
 
     def get_schema(self) -> str:
@@ -25,7 +22,7 @@ class Route(AbstractRoute):
     def __init__(self,
                  schema: str,
                  parameter_names: list,
-                 controller_instance: PyRestRouteController):
+                 controller_instance):
         self._schema = schema
         self._parameter_names = parameter_names
         self._controller = controller_instance

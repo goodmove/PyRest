@@ -7,7 +7,6 @@ from pyrest.src.router import Router
 def RouteController(class_obj):
     # print('___start')
     class_obj = class_obj
-    inherited_class_obj = inherit_route_controller(class_obj)
 
     for method_name in dir(class_obj):
         if not method_name.startswith('_'):
@@ -18,9 +17,9 @@ def RouteController(class_obj):
             if isinstance(schema, str) and isinstance(http_method, str):
                 delattr(attr, 'schema')
                 delattr(attr, 'http_method')
-                Router().register_schema(inherited_class_obj, RouteParameters(method_name, http_method, schema))
+                Router().register_schema(class_obj, RouteParameters(method_name, http_method, schema))
 
-    return inherited_class_obj
+    return class_obj
 
 
 def GET(schema: str):
