@@ -5,7 +5,7 @@ import sys
 
 import re
 
-from pyrest.http import HttpRequest, HttpResponse, HttpJsonRequest, ContentType, Headers
+from pyrest.http import HttpRequest, HttpResponse, HttpJsonRequest, ContentType, Headers, ResponseMessages
 from pyrest.src.exceptions import *
 from pyrest.src.router import Router
 
@@ -46,12 +46,12 @@ class RequestHandler(BaseHTTPRequestHandler):
             http_response = Router().resolve(http_request)
         except (NoRouteFoundError,
                 InvalidParameterValueError) as error:
-            http_response = HttpResponse(404, 'Not Found')
+            http_response = HttpResponse(404, ResponseMessages.messages.get(404))
         except MethodNotDefinedError as error:
-            http_response = HttpResponse(405, 'Method Not Allowed')
+            http_response = HttpResponse(405, ResponseMessages.messages.get(405))
         except Exception as error:
             print(repr(error), file=sys.stderr)
-            http_response = HttpResponse(500, 'Internal server error: ' + repr(error))
+            http_response = HttpResponse(500, ResponseMessages.messages.get(500))
         self.__send_response(http_response)
 
     def __send_response(self, http_response: HttpResponse):
