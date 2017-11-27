@@ -53,6 +53,10 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.__send_response(http_response)
 
     def __send_response(self, http_response: HttpResponse):
+        http_response.add_header('Access-Control-Allow-Origin', '*') \
+                    .add_header('Access-Control-Allow-Headers', 'Content-Type, Content-Range, Cache-Control, '
+                                                                'Authorization, Keep-Alive, User-Agent') \
+                    .add_header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
         self.send_response(http_response.get_code(), http_response.get_message())
         for name, value in http_response.get_headers().items():
             self.send_header(name, value)
