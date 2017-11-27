@@ -34,6 +34,9 @@ class RequestHandler(BaseHTTPRequestHandler):
         print('new DELETE request')
         self.__handle_request()
 
+    def do_OPTIONS(self):
+        self.__send_response(HttpResponse())
+
     def __handle_request(self, http_request: HttpRequest = None):
         try:
             if http_request is None:
