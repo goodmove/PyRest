@@ -30,7 +30,10 @@ class PyRest:
         if self.state is not PyRest.State.LAUNCHING:
             raise AssertionError('Server is already running')
 
+        class CustomHttpServer(self.threading_mixin_class, HTTPServer):
+            pass
+
         print('Starting server...')
-        self.server = HTTPServer(self.server_address, RequestHandler)
+        self.server = CustomHttpServer(self.server_address, RequestHandler)
         print('Listening at ' + str(self.server_address))
         self.server.serve_forever(poll_interval)
