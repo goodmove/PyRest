@@ -3,6 +3,8 @@ from http.server import BaseHTTPRequestHandler
 
 import sys
 
+import re
+
 from pyrest.http import HttpRequest, HttpResponse, HttpJsonRequest, ContentType, Headers
 from pyrest.src.exceptions import *
 from pyrest.src.router import Router
@@ -19,7 +21,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         print('new POST request')
         content_type = self.headers.get(Headers.content_type)
         http_request = None
-        if content_type == ContentType.json:
+        if re.match(ContentType.json, content_type):
             content_length = int(self.headers.get(Headers.content_length))
             json_bytes = self.rfile.read(content_length)
             json_obj = json.loads(str(json_bytes, 'UTF-8'))
