@@ -30,11 +30,10 @@ class Router:
         self._class_routes = dict()
         # instance that parses schemas
         self._route_parser = None
-        # router state, which changes while application
-        # runtime stages change
+        """
+         router state, which changes while application runtime stages change
+        """
         self._state = State.GATHERING
-
-        # self._registered_schemas = set()
 
     # make thread-safe?
     def resolve(self, request: HttpRequest) -> HttpResponse:
@@ -48,12 +47,6 @@ class Router:
         if self._state is not State.GATHERING:
             raise AssertionError('Registration is not allowed any more: router has registered all routes.')
 
-        # if route_parameters.schema in self._registered_schemas:
-        #     raise RuntimeError('Schema ' + str(route_parameters.schema) + ' is already registered')
-
-        print("Registered schema " + str(route_parameters.schema) + " for class " + str(route_controller_class))
-
-        # self._registered_schemas.add(route_parameters.schema)
         class_routes = self._class_routes.get(route_controller_class, [])
         class_routes.append(route_parameters)
         self._class_routes[route_controller_class] = class_routes
@@ -74,7 +67,6 @@ class Router:
             raise AssertionError('All registered routes are already initialized')
 
         self._state = State.INITIALIZING
-        # print(str(self._class_routes))
         self._route_parser = route_parser_class(self._class_routes)
         self._state = State.ROUTING
 
