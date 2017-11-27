@@ -23,7 +23,6 @@ class TreeNode:
         self.schema = ''
         self.handlers = dict()
 
-
     def get_children(self) -> dict:
         return self.children
 
@@ -55,16 +54,14 @@ class ParamTreeNode(TreeNode):
         self.value_type = {
             'int': int,
             'alpha': str,
-            'word:': str,
-            'any:': str,
-        }.get('any' if value_type is None else value_type)
+            'word:': str
+        }.get('word' if value_type is None else value_type)
 
         self.value_pattern = {
             'int': r"^\d+$",
             'alpha': r"^[a-zA-Z]+$",
-            'word': r"^\w+$",
-            'any': r".+"
-        }.get('any' if value_type is None else value_type)
+            'word': r"^\w+$"
+        }.get('word' if value_type is None else value_type)
 
     def parse(self, param_string: str):
         if re.match(self.value_pattern, param_string):
