@@ -54,14 +54,16 @@ class ParamTreeNode(TreeNode):
         self.value_type = {
             'int': int,
             'alpha': str,
-            'word:': str
-        }.get('word' if value_type is None else value_type)
+            'word:': str,
+            'any': str,
+        }.get('any' if value_type is None else value_type)
 
         self.value_pattern = {
             'int': r"^\d+$",
             'alpha': r"^[a-zA-Z]+$",
-            'word': r"^\w+$"
-        }.get('word' if value_type is None else value_type)
+            'word': r"^\w+$",
+            'any': r".+",
+        }.get('any' if value_type is None else value_type)
 
     def parse(self, param_string: str):
         if re.match(self.value_pattern, param_string):
@@ -198,13 +200,14 @@ class TreeRouteParser(AbstractRouteParser):
             elif re.match(parameter_pattern, schema_part):
                 # print('matched parameter pattern')
                 param_node = current_tree_node.get_parameter()
-                if not param_node:
-                    schema_parameter = self.__parse_parametrized_part(schema_part)
+                schema_parameter = self.__parse_parametrized_part(schema_part)
+                # print(schema_parameter)
+                if not param_node or param_node.name == schema_parameter[0]:
                     if schema_parameter[0] in schema_parameter_names:
                         raise DoubleDeclarationError('Double declaration of parameter ' + str(schema_parameter[0]) +
                                                      ' in schema ' + schema)
                     schema_parameter_names.add(schema_parameter[0])
-                    param_node = ParamTreeNode(schema_part, schema_parameter[1])
+                    param_node = ParamTreeNode(schema_parameter[0], schema_parameter[1])
                 else:
                     # print(param_node.name)
                     raise RuntimeError('Error for schema ' + schema +

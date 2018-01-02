@@ -1,4 +1,5 @@
 import json
+import traceback
 from http.server import BaseHTTPRequestHandler
 
 import sys
@@ -46,6 +47,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             http_response = HttpResponse(405, ResponseMessages.messages.get(405))
         except Exception as error:
             print(repr(error), file=sys.stderr)
+            print(traceback.format_exc())
             http_response = HttpResponse(500, ResponseMessages.messages.get(500))
         self.__send_response(http_response)
 
