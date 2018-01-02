@@ -1,4 +1,4 @@
-from pyrest.http import HttpRequest
+from pyrest.http import HttpRequest, HttpResponse
 from pyrest.parser.route_parser import AbstractRouteParser
 from pyrest.src.exceptions import NoRouteFoundError, DoubleMethodBindingError, MethodNotDefinedError
 from pyrest.src.route import Route
@@ -44,7 +44,7 @@ class DefaultRouteParser(AbstractRouteParser):
         # parse schemas and turn them into resolvable routes
         self.__build_routes(class_routes)
 
-    def resolve(self, request: HttpRequest):
+    def resolve(self, request: HttpRequest) -> HttpResponse:
         route_container = self._routes.get(request.path, None)
 
         if not route_container:
@@ -53,7 +53,7 @@ class DefaultRouteParser(AbstractRouteParser):
 
         # call controller method, which is bound to certain
         # http request method
-        getattr(
+        return getattr(
             route_container.route.get_controller(),
             route_container.handlers.get(request.method)
         )(request)
